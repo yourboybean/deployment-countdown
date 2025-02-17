@@ -8,6 +8,35 @@ interface TimeLeft {
   seconds: number;
 }
 
+interface DeploymentLog {
+  date: string;
+  product: string;
+  description: string;
+  link: string;
+}
+
+// Example deployment logs
+const deploymentLogs: DeploymentLog[] = [
+  {
+    date: "2024-03-14",
+    product: "Feature X",
+    description: "Major update to the core functionality",
+    link: "https://example.com/release-1",
+  },
+  {
+    date: "2024-03-07",
+    product: "Service Y",
+    description: "Performance improvements and bug fixes",
+    link: "https://example.com/release-2",
+  },
+  {
+    date: "2024-02-29",
+    product: "Component Z",
+    description: "New user interface components",
+    link: "https://example.com/release-3",
+  },
+];
+
 const getNextThursday = (): Date => {
   const now = new Date();
   const targetDay = 4; // 0 = Sunday, 4 = Thursday
@@ -79,8 +108,8 @@ export const CountdownTimer: React.FC = () => {
   }, [targetDate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-timer-background p-4">
-      <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-2xl">
+    <div className="min-h-screen flex flex-col items-center justify-start bg-timer-background p-4 pt-20">
+      <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-2xl mb-12">
         <h1 className="text-timer-text text-2xl md:text-3xl font-semibold mb-8 text-center">
           Time to next shipment
         </h1>
@@ -92,6 +121,44 @@ export const CountdownTimer: React.FC = () => {
           <TimeUnit value={timeLeft.minutes} label="Minutes" />
           <Separator />
           <TimeUnit value={timeLeft.seconds} label="Seconds" />
+        </div>
+      </div>
+
+      <div className="w-full max-w-4xl bg-white/5 backdrop-blur-sm rounded-3xl p-8 shadow-2xl">
+        <h2 className="text-timer-text text-xl md:text-2xl font-semibold mb-6">Deployment Log</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-timer-text">
+            <thead>
+              <tr className="border-b border-white/10">
+                <th className="text-left py-3 px-4 font-semibold">Date</th>
+                <th className="text-left py-3 px-4 font-semibold">Product</th>
+                <th className="text-left py-3 px-4 font-semibold">Description</th>
+                <th className="text-left py-3 px-4 font-semibold">Link</th>
+              </tr>
+            </thead>
+            <tbody>
+              {deploymentLogs.map((log, index) => (
+                <tr 
+                  key={index} 
+                  className="border-b border-white/10 hover:bg-white/5 transition-colors"
+                >
+                  <td className="py-3 px-4">{log.date}</td>
+                  <td className="py-3 px-4">{log.product}</td>
+                  <td className="py-3 px-4">{log.description}</td>
+                  <td className="py-3 px-4">
+                    <a 
+                      href={log.link} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-blue-400 hover:text-blue-300 transition-colors"
+                    >
+                      View Details
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
