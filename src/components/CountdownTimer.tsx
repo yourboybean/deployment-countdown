@@ -5,19 +5,21 @@ interface TimeLeft {
   days: number;
   hours: number;
   minutes: number;
+  seconds: number;
 }
 
 const calculateTimeLeft = (targetDate: Date): TimeLeft => {
   const difference = targetDate.getTime() - new Date().getTime();
   
   if (difference <= 0) {
-    return { days: 0, hours: 0, minutes: 0 };
+    return { days: 0, hours: 0, minutes: 0, seconds: 0 };
   }
 
   return {
     days: Math.floor(difference / (1000 * 60 * 60 * 24)),
     hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
     minutes: Math.floor((difference / (1000 * 60)) % 60),
+    seconds: Math.floor((difference / 1000) % 60),
   };
 };
 
@@ -43,7 +45,6 @@ const Separator: React.FC = () => (
 );
 
 export const CountdownTimer: React.FC = () => {
-  // Set target date to 30 days from now
   const [targetDate] = useState(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft(targetDate));
 
@@ -64,6 +65,8 @@ export const CountdownTimer: React.FC = () => {
           <TimeUnit value={timeLeft.hours} label="Hours" />
           <Separator />
           <TimeUnit value={timeLeft.minutes} label="Minutes" />
+          <Separator />
+          <TimeUnit value={timeLeft.seconds} label="Seconds" />
         </div>
       </div>
     </div>
