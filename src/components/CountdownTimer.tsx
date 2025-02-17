@@ -73,18 +73,18 @@ const padNumber = (num: number): string => {
 };
 
 const TimeUnit: React.FC<{ value: number; label: string }> = ({ value, label }) => (
-  <div className="flex flex-col items-center mx-4">
-    <div className="text-7xl md:text-9xl font-bold text-timer-text tracking-tight animate-number-change">
+  <div className="flex flex-col items-center mx-2 md:mx-4">
+    <div className="text-4xl sm:text-6xl md:text-7xl lg:text-9xl font-bold text-timer-text tracking-tight animate-number-change">
       {padNumber(value)}
     </div>
-    <div className="text-timer-label text-sm md:text-base mt-2 uppercase tracking-wider">
+    <div className="text-xs sm:text-sm md:text-base mt-1 md:mt-2 uppercase tracking-wider text-timer-label">
       {label.toLowerCase()}
     </div>
   </div>
 );
 
 const Separator: React.FC = () => (
-  <div className="text-7xl md:text-9xl text-timer-text font-light animate-separator-pulse self-start mt-2">
+  <div className="text-4xl sm:text-6xl md:text-7xl lg:text-9xl text-timer-text font-light animate-separator-pulse self-start mt-1 md:mt-2">
     :
   </div>
 );
@@ -108,12 +108,12 @@ export const CountdownTimer: React.FC = () => {
   }, [targetDate]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start bg-timer-background p-4 pt-20">
-      <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-2xl mb-12">
-        <h1 className="text-timer-text text-2xl md:text-3xl font-semibold mb-8 text-center">
+    <div className="min-h-screen flex flex-col items-center justify-start bg-timer-background p-2 sm:p-4 pt-8 sm:pt-20">
+      <div className="bg-white/5 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-12 shadow-2xl mb-6 sm:mb-12 w-full max-w-4xl">
+        <h1 className="text-timer-text text-xl sm:text-2xl md:text-3xl font-semibold mb-4 sm:mb-8 text-center">
           time to next deployment
         </h1>
-        <div className="flex items-center justify-center flex-wrap">
+        <div className="flex items-center justify-center">
           <TimeUnit value={timeLeft.days} label="days" />
           <Separator />
           <TimeUnit value={timeLeft.hours} label="hours" />
@@ -124,16 +124,16 @@ export const CountdownTimer: React.FC = () => {
         </div>
       </div>
 
-      <div className="w-full max-w-4xl bg-white/5 backdrop-blur-sm rounded-3xl p-8 shadow-2xl">
-        <h2 className="text-timer-text text-xl md:text-2xl font-semibold mb-6">log</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-timer-text">
+      <div className="w-full max-w-4xl bg-white/5 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl">
+        <h2 className="text-timer-text text-lg sm:text-xl md:text-2xl font-semibold mb-4 sm:mb-6">log</h2>
+        <div className="overflow-x-auto -mx-4 sm:mx-0">
+          <table className="w-full text-timer-text text-sm sm:text-base">
             <thead>
               <tr className="border-b border-white/10">
-                <th className="text-left py-3 px-4 font-semibold">date</th>
-                <th className="text-left py-3 px-4 font-semibold">product</th>
-                <th className="text-left py-3 px-4 font-semibold">description</th>
-                <th className="text-left py-3 px-4 font-semibold">link</th>
+                <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold">date</th>
+                <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold">product</th>
+                <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold hidden sm:table-cell">description</th>
+                <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold">link</th>
               </tr>
             </thead>
             <tbody>
@@ -142,17 +142,17 @@ export const CountdownTimer: React.FC = () => {
                   key={index} 
                   className="border-b border-white/10 hover:bg-white/5 transition-colors"
                 >
-                  <td className="py-3 px-4">{log.date}</td>
-                  <td className="py-3 px-4">{log.product}</td>
-                  <td className="py-3 px-4">{log.description}</td>
-                  <td className="py-3 px-4">
+                  <td className="py-2 sm:py-3 px-3 sm:px-4">{log.date}</td>
+                  <td className="py-2 sm:py-3 px-3 sm:px-4">{log.product}</td>
+                  <td className="py-2 sm:py-3 px-3 sm:px-4 hidden sm:table-cell">{log.description}</td>
+                  <td className="py-2 sm:py-3 px-3 sm:px-4">
                     <a 
                       href={log.link} 
                       target="_blank" 
                       rel="noopener noreferrer" 
                       className="text-blue-400 hover:text-blue-300 transition-colors"
                     >
-                      view details
+                      view
                     </a>
                   </td>
                 </tr>
