@@ -74,7 +74,7 @@ const padNumber = (num: number): string => {
 
 const TimeUnit: React.FC<{ value: number; label: string }> = ({ value, label }) => (
   <div className="flex flex-col items-center mx-4">
-    <div className="text-7xl md:text-9xl font-bold text-timer-text tracking-tight animate-number-change backdrop-blur-sm">
+    <div className="text-7xl md:text-9xl font-bold text-timer-text tracking-tight animate-number-change">
       {padNumber(value)}
     </div>
     <div className="text-timer-label text-sm md:text-base mt-2 uppercase tracking-wider">
