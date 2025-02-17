@@ -8,6 +8,22 @@ interface TimeLeft {
   seconds: number;
 }
 
+const getNextThursday = (): Date => {
+  const now = new Date();
+  const targetDay = 4; // 0 = Sunday, 4 = Thursday
+  let daysUntilTarget = targetDay - now.getDay();
+  
+  if (daysUntilTarget <= 0) {
+    daysUntilTarget += 7; // Move to next week if we're past Thursday
+  }
+  
+  const nextThursday = new Date(now);
+  nextThursday.setDate(now.getDate() + daysUntilTarget);
+  nextThursday.setHours(23, 59, 0, 0);
+  
+  return nextThursday;
+};
+
 const calculateTimeLeft = (targetDate: Date): TimeLeft => {
   const difference = targetDate.getTime() - new Date().getTime();
   
@@ -45,12 +61,18 @@ const Separator: React.FC = () => (
 );
 
 export const CountdownTimer: React.FC = () => {
-  const [targetDate] = useState(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
+  const [targetDate, setTargetDate] = useState(getNextThursday());
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft(targetDate));
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft(targetDate));
+      const newTimeLeft = calculateTimeLeft(targetDate);
+      setTimeLeft(newTimeLeft);
+      
+      // If timer has reached zero, set new target date
+      if (Object.values(newTimeLeft).every(value => value === 0)) {
+        setTargetDate(getNextThursday());
+      }
     }, 1000);
 
     return () => clearInterval(timer);
@@ -59,6 +81,9 @@ export const CountdownTimer: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-timer-background p-4">
       <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-2xl">
+        <h1 className="text-timer-text text-2xl md:text-3xl font-semibold mb-8 text-center">
+          Time to next shipment
+        </h1>
         <div className="flex items-center justify-center flex-wrap">
           <TimeUnit value={timeLeft.days} label="Days" />
           <Separator />
