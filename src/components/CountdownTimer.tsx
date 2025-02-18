@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 
 interface TimeLeft {
@@ -72,13 +71,10 @@ const padNumber = (num: number): string => {
   return num.toString().padStart(2, "0");
 };
 
-const TimeUnit: React.FC<{ value: number; label: string }> = ({ value, label }) => (
+const TimeUnit: React.FC<{ value: number }> = ({ value }) => (
   <div className="flex flex-col items-center mx-2 md:mx-4">
     <div className="text-4xl sm:text-6xl md:text-7xl lg:text-9xl font-bold text-timer-text tracking-tight animate-number-change">
       {padNumber(value)}
-    </div>
-    <div className="text-xs sm:text-sm md:text-base mt-1 md:mt-2 uppercase tracking-wider text-timer-label">
-      {label.toLowerCase()}
     </div>
   </div>
 );
@@ -111,21 +107,20 @@ export const CountdownTimer: React.FC = () => {
     <div className="min-h-screen flex flex-col items-center justify-start bg-timer-background p-2 sm:p-4 pt-8 sm:pt-20">
       <div className="bg-white/5 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-12 shadow-2xl mb-6 sm:mb-12 w-full max-w-4xl">
         <h1 className="text-timer-text text-xl sm:text-2xl md:text-3xl font-semibold mb-4 sm:mb-8 text-center">
-          time to next deployment
+          next deployment
         </h1>
         <div className="flex items-center justify-center">
-          <TimeUnit value={timeLeft.days} label="days" />
+          <TimeUnit value={timeLeft.days} />
           <Separator />
-          <TimeUnit value={timeLeft.hours} label="hours" />
+          <TimeUnit value={timeLeft.hours} />
           <Separator />
-          <TimeUnit value={timeLeft.minutes} label="minutes" />
+          <TimeUnit value={timeLeft.minutes} />
           <Separator />
-          <TimeUnit value={timeLeft.seconds} label="seconds" />
+          <TimeUnit value={timeLeft.seconds} />
         </div>
       </div>
 
       <div className="w-full max-w-4xl bg-white/5 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl">
-        <h2 className="text-timer-text text-lg sm:text-xl md:text-2xl font-semibold mb-4 sm:mb-6">log</h2>
         <div className="overflow-x-auto -mx-4 sm:mx-0">
           <table className="w-full text-timer-text text-sm sm:text-base">
             <thead>
