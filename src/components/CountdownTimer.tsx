@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 
 interface TimeLeft {
@@ -15,7 +14,6 @@ interface DeploymentLog {
   link: string;
 }
 
-// Example deployment logs with shorter date format
 const deploymentLogs: DeploymentLog[] = [
   {
     date: "14 Mar",
@@ -108,7 +106,7 @@ export const CountdownTimer: React.FC = () => {
     <div className="min-h-screen flex flex-col items-center justify-start bg-timer-background p-2 sm:p-4 pt-8 sm:pt-20">
       <div className="bg-white/5 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-12 shadow-2xl mb-6 sm:mb-12 w-full max-w-4xl">
         <h1 className="text-timer-text text-xl sm:text-2xl md:text-3xl font-semibold mb-4 sm:mb-8 text-center">
-          next deployment
+          Next Deployment
         </h1>
         <div className="flex items-center justify-center">
           <TimeUnit value={timeLeft.days} />
@@ -126,10 +124,10 @@ export const CountdownTimer: React.FC = () => {
           <table className="w-full text-timer-text text-sm sm:text-base">
             <thead>
               <tr className="border-b border-white/10">
-                <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold">date</th>
-                <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold">product</th>
-                <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold hidden sm:table-cell">description</th>
-                <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold">link</th>
+                <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold">Date</th>
+                <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold">Product</th>
+                <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold hidden sm:table-cell">Description</th>
+                <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold">Link</th>
               </tr>
             </thead>
             <tbody>
@@ -148,7 +146,7 @@ export const CountdownTimer: React.FC = () => {
                       rel="noopener noreferrer" 
                       className="text-blue-400 hover:text-blue-300 transition-colors"
                     >
-                      view
+                      View
                     </a>
                   </td>
                 </tr>
