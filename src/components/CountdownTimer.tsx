@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 
 interface TimeLeft {
@@ -14,22 +15,22 @@ interface DeploymentLog {
   link: string;
 }
 
-// Example deployment logs
+// Example deployment logs with shorter date format
 const deploymentLogs: DeploymentLog[] = [
   {
-    date: "2024-03-14",
+    date: "14 Mar",
     product: "Feature X",
     description: "Major update to the core functionality",
     link: "https://example.com/release-1",
   },
   {
-    date: "2024-03-07",
+    date: "07 Mar",
     product: "Service Y",
     description: "Performance improvements and bug fixes",
     link: "https://example.com/release-2",
   },
   {
-    date: "2024-02-29",
+    date: "29 Feb",
     product: "Component Z",
     description: "New user interface components",
     link: "https://example.com/release-3",
