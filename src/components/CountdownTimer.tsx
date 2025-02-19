@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { ArrowUp } from "lucide-react";
 
@@ -25,24 +24,10 @@ interface FloatingArrow {
 
 const deploymentLogs: DeploymentLog[] = [
   {
-    date: "14 Mar",
-    product: "Feature X",
-    description: "Major update to the core functionality",
-    link: "https://example.com/release-1",
-    votes: 0,
-  },
-  {
-    date: "07 Mar",
-    product: "Service Y",
-    description: "Performance improvements and bug fixes",
-    link: "https://example.com/release-2",
-    votes: 0,
-  },
-  {
-    date: "29 Feb",
-    product: "Component Z",
-    description: "New user interface components",
-    link: "https://example.com/release-3",
+    date: "20 Feb",
+    product: "Deployment Countdown",
+    description: "A calendar to track the things I deploy",
+    link: "https://camdenbean.com",
     votes: 0,
   },
 ];
