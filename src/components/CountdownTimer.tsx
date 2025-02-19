@@ -1,4 +1,6 @@
+
 import React, { useState, useEffect } from "react";
+import { ArrowUp } from "lucide-react";
 
 interface TimeLeft {
   days: number;
@@ -12,6 +14,7 @@ interface DeploymentLog {
   product: string;
   description: string;
   link: string;
+  votes?: number;
 }
 
 const deploymentLogs: DeploymentLog[] = [
@@ -20,18 +23,21 @@ const deploymentLogs: DeploymentLog[] = [
     product: "Feature X",
     description: "Major update to the core functionality",
     link: "https://example.com/release-1",
+    votes: 0,
   },
   {
     date: "07 Mar",
     product: "Service Y",
     description: "Performance improvements and bug fixes",
     link: "https://example.com/release-2",
+    votes: 0,
   },
   {
     date: "29 Feb",
     product: "Component Z",
     description: "New user interface components",
     link: "https://example.com/release-3",
+    votes: 0,
   },
 ];
 
@@ -87,13 +93,13 @@ const Separator: React.FC = () => (
 export const CountdownTimer: React.FC = () => {
   const [targetDate, setTargetDate] = useState(getNextThursday());
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft(targetDate));
+  const [logs, setLogs] = useState<DeploymentLog[]>(deploymentLogs);
 
   useEffect(() => {
     const timer = setInterval(() => {
       const newTimeLeft = calculateTimeLeft(targetDate);
       setTimeLeft(newTimeLeft);
       
-      // If timer has reached zero, set new target date
       if (Object.values(newTimeLeft).every(value => value === 0)) {
         setTargetDate(getNextThursday());
       }
@@ -101,6 +107,17 @@ export const CountdownTimer: React.FC = () => {
 
     return () => clearInterval(timer);
   }, [targetDate]);
+
+  const handleUpvote = (index: number) => {
+    setLogs(prevLogs => {
+      const newLogs = [...prevLogs];
+      newLogs[index] = {
+        ...newLogs[index],
+        votes: (newLogs[index].votes || 0) + 1,
+      };
+      return newLogs;
+    });
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-timer-background p-2 sm:p-4 pt-8 sm:pt-20">
@@ -128,10 +145,11 @@ export const CountdownTimer: React.FC = () => {
                 <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold">Product</th>
                 <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold hidden sm:table-cell">Description</th>
                 <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold">Link</th>
+                <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold">Votes</th>
               </tr>
             </thead>
             <tbody>
-              {deploymentLogs.map((log, index) => (
+              {logs.map((log, index) => (
                 <tr 
                   key={index} 
                   className="border-b border-white/10 hover:bg-white/5 transition-colors"
@@ -148,6 +166,17 @@ export const CountdownTimer: React.FC = () => {
                     >
                       View
                     </a>
+                  </td>
+                  <td className="py-2 sm:py-3 px-3 sm:px-4">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleUpvote(index)}
+                        className="p-1 hover:bg-white/10 rounded-full transition-colors"
+                      >
+                        <ArrowUp className="w-4 h-4 text-blue-400" />
+                      </button>
+                      <span>{log.votes}</span>
+                    </div>
                   </td>
                 </tr>
               ))}
