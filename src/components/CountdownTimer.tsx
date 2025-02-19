@@ -208,11 +208,12 @@ export const CountdownTimer: React.FC = () => {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={(e) => handleUpvote(index, e)}
-                        className="p-1 hover:bg-white/10 rounded-full transition-colors"
+                        className="flex items-center justify-center bg-blue-500/10 hover:bg-blue-500/20 active:bg-blue-500/30 rounded-full p-2 transition-all duration-200 transform hover:scale-110 group"
+                        title="Upvote this product"
                       >
-                        <ArrowUp className="w-4 h-4 text-blue-400" />
+                        <ArrowUp className="w-5 h-5 text-blue-400 group-hover:text-blue-300" />
                       </button>
-                      <span>{log.votes}</span>
+                      <span className="min-w-[1.5rem] text-center">{log.votes}</span>
                     </div>
                   </td>
                 </tr>
@@ -222,18 +223,20 @@ export const CountdownTimer: React.FC = () => {
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes float-up {
-          0% {
-            transform: translateY(0) scale(1);
-            opacity: 1;
+      <style>
+        {`
+          @keyframes float-up {
+            0% {
+              transform: translateY(0) scale(1);
+              opacity: 1;
+            }
+            100% {
+              transform: translateY(-50px) scale(0.5);
+              opacity: 0;
+            }
           }
-          100% {
-            transform: translateY(-50px) scale(0.5);
-            opacity: 0;
-          }
-        }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };
