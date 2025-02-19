@@ -17,6 +17,12 @@ interface DeploymentLog {
   votes?: number;
 }
 
+interface FloatingArrow {
+  id: number;
+  x: number;
+  y: number;
+}
+
 const deploymentLogs: DeploymentLog[] = [
   {
     date: "14 Mar",
@@ -94,6 +100,8 @@ export const CountdownTimer: React.FC = () => {
   const [targetDate, setTargetDate] = useState(getNextThursday());
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft(targetDate));
   const [logs, setLogs] = useState<DeploymentLog[]>(deploymentLogs);
+  const [floatingArrows, setFloatingArrows] = useState<FloatingArrow[]>([]);
+  const [arrowIdCounter, setArrowIdCounter] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -108,7 +116,23 @@ export const CountdownTimer: React.FC = () => {
     return () => clearInterval(timer);
   }, [targetDate]);
 
-  const handleUpvote = (index: number) => {
+  const handleUpvote = (index: number, event: React.MouseEvent) => {
+    const buttonRect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    const numArrows = Math.min(5, (logs[index].votes || 0) + 1);
+    
+    const newArrows = Array.from({ length: numArrows }, (_, i) => ({
+      id: arrowIdCounter + i,
+      x: buttonRect.left + buttonRect.width / 2,
+      y: buttonRect.top,
+    }));
+
+    setArrowIdCounter(prev => prev + numArrows);
+    setFloatingArrows(prev => [...prev, ...newArrows]);
+
+    setTimeout(() => {
+      setFloatingArrows(prev => prev.filter(arrow => !newArrows.find(na => na.id === arrow.id)));
+    }, 1000);
+
     setLogs(prevLogs => {
       const newLogs = [...prevLogs];
       newLogs[index] = {
@@ -121,6 +145,19 @@ export const CountdownTimer: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-timer-background p-2 sm:p-4 pt-8 sm:pt-20">
+      {floatingArrows.map((arrow) => (
+        <div
+          key={arrow.id}
+          className="fixed pointer-events-none"
+          style={{
+            left: `${arrow.x}px`,
+            top: `${arrow.y}px`,
+            animation: 'float-up 1s ease-out forwards',
+          }}
+        >
+          <ArrowUp className="w-4 h-4 text-blue-400" />
+        </div>
+      ))}
       <div className="bg-white/5 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-12 shadow-2xl mb-6 sm:mb-12 w-full max-w-4xl">
         <h1 className="text-timer-text text-xl sm:text-2xl md:text-3xl font-semibold mb-4 sm:mb-8 text-center">
           Next Deployment
@@ -170,7 +207,7 @@ export const CountdownTimer: React.FC = () => {
                   <td className="py-2 sm:py-3 px-3 sm:px-4">
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => handleUpvote(index)}
+                        onClick={(e) => handleUpvote(index, e)}
                         className="p-1 hover:bg-white/10 rounded-full transition-colors"
                       >
                         <ArrowUp className="w-4 h-4 text-blue-400" />
@@ -184,6 +221,19 @@ export const CountdownTimer: React.FC = () => {
           </table>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes float-up {
+          0% {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(-50px) scale(0.5);
+            opacity: 0;
+          }
+        }
+      `}</style>
     </div>
   );
 };
