@@ -26,7 +26,7 @@ const deploymentLogs: DeploymentLog[] = [
   {
     date: "20 Feb",
     product: "Deployment Countdown",
-    description: "A calendar to track the things I deploy",
+    description: "A log of all the projects I've worked on and when they were deployed",
     link: "https://camdenbean.com",
     votes: 0,
   },
