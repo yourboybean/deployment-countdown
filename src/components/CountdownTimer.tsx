@@ -37,13 +37,25 @@ const getNextThursday = (): Date => {
   const targetDay = 4; // 0 = Sunday, 4 = Thursday
   let daysUntilTarget = targetDay - now.getDay();
   
+  // If it's Thursday but past 23:59, or if it's after Thursday,
+  // move to next week
   if (daysUntilTarget <= 0) {
-    daysUntilTarget += 7; // Move to next week if we're past Thursday
+    daysUntilTarget += 7;
   }
   
   const nextThursday = new Date(now);
   nextThursday.setDate(now.getDate() + daysUntilTarget);
+  // Set to 23:59:00
   nextThursday.setHours(23, 59, 0, 0);
+  
+  // If it's Thursday and before 23:59, we should use today
+  if (daysUntilTarget === 0) {
+    const currentTime = now.getHours() * 60 + now.getMinutes();
+    const targetTime = 23 * 60 + 59;
+    if (currentTime < targetTime) {
+      return nextThursday;
+    }
+  }
   
   return nextThursday;
 };
