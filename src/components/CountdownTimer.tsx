@@ -1,8 +1,7 @@
+
 import React, { useState, useEffect } from "react";
-import { ArrowUp } from "lucide-react";
 
 interface TimeLeft {
-  days: number;
   hours: number;
   minutes: number;
   seconds: number;
@@ -13,70 +12,52 @@ interface DeploymentLog {
   product: string;
   description: string;
   link: string;
-  votes?: number;
-}
-
-interface FloatingArrow {
-  id: number;
-  x: number;
-  y: number;
 }
 
 const deploymentLogs: DeploymentLog[] = [
   {
     date: "20 Feb",
     product: "Deployment Countdown",
-    description: "A log of all the projects I've worked on and when they were deployed",
-    link: "https://github.com/yourboybean/deployment-countdown",
-    votes: 0,
+    description: "A calendar to track the things I deploy",
+    link: "https://camdenbean.com",
   },
   {
     date: "24 Feb",
     product: "UFO",
     description: "A crowdsourced leaderboard of the best operators in Utah",
     link: "https://www.utahbest.tech/",
-    votes: 0,
   },
 ];
 
-const getNextThursday = (): Date => {
+// Fixed deadline: Every Thursday at 11:59 PM
+const getTimeLeft = (): TimeLeft => {
   const now = new Date();
+  
+  // Calculate the next Thursday at 11:59 PM
   const targetDay = 4; // 0 = Sunday, 4 = Thursday
   let daysUntilTarget = targetDay - now.getDay();
   
-  // If it's Thursday but past 23:59, or if it's after Thursday,
-  // move to next week
-  if (daysUntilTarget <= 0) {
+  // If it's past Thursday, or it's Thursday but past 11:59 PM, target the next week
+  if (daysUntilTarget < 0 || (daysUntilTarget === 0 && (now.getHours() > 23 || (now.getHours() === 23 && now.getMinutes() >= 59)))) {
     daysUntilTarget += 7;
   }
   
   const nextThursday = new Date(now);
   nextThursday.setDate(now.getDate() + daysUntilTarget);
-  // Set to 23:59:00
   nextThursday.setHours(23, 59, 0, 0);
   
-  // If it's Thursday and before 23:59, we should use today
-  if (daysUntilTarget === 0) {
-    const currentTime = now.getHours() * 60 + now.getMinutes();
-    const targetTime = 23 * 60 + 59;
-    if (currentTime < targetTime) {
-      return nextThursday;
-    }
-  }
-  
-  return nextThursday;
-};
-
-const calculateTimeLeft = (targetDate: Date): TimeLeft => {
-  const difference = targetDate.getTime() - new Date().getTime();
+  // Calculate time difference
+  const difference = nextThursday.getTime() - now.getTime();
   
   if (difference <= 0) {
-    return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    return { hours: 0, minutes: 0, seconds: 0 };
   }
 
+  // Calculate hours, minutes and seconds
+  const totalHours = Math.floor(difference / (1000 * 60 * 60));
+  
   return {
-    days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-    hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+    hours: totalHours,
     minutes: Math.floor((difference / (1000 * 60)) % 60),
     seconds: Math.floor((difference / 1000) % 60),
   };
@@ -101,74 +82,25 @@ const Separator: React.FC = () => (
 );
 
 export const CountdownTimer: React.FC = () => {
-  const [targetDate, setTargetDate] = useState(getNextThursday());
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft(targetDate));
-  const [logs, setLogs] = useState<DeploymentLog[]>(deploymentLogs);
-  const [floatingArrows, setFloatingArrows] = useState<FloatingArrow[]>([]);
-  const [arrowIdCounter, setArrowIdCounter] = useState(0);
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>(getTimeLeft());
+  const [logs] = useState<DeploymentLog[]>(deploymentLogs);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      const newTimeLeft = calculateTimeLeft(targetDate);
+      const newTimeLeft = getTimeLeft();
       setTimeLeft(newTimeLeft);
-      
-      if (Object.values(newTimeLeft).every(value => value === 0)) {
-        setTargetDate(getNextThursday());
-      }
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [targetDate]);
-
-  const handleUpvote = (index: number, event: React.MouseEvent) => {
-    const buttonRect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-    const numArrows = Math.min(5, (logs[index].votes || 0) + 1);
-    
-    const newArrows = Array.from({ length: numArrows }, (_, i) => ({
-      id: arrowIdCounter + i,
-      x: buttonRect.left + buttonRect.width / 2,
-      y: buttonRect.top,
-    }));
-
-    setArrowIdCounter(prev => prev + numArrows);
-    setFloatingArrows(prev => [...prev, ...newArrows]);
-
-    setTimeout(() => {
-      setFloatingArrows(prev => prev.filter(arrow => !newArrows.find(na => na.id === arrow.id)));
-    }, 1000);
-
-    setLogs(prevLogs => {
-      const newLogs = [...prevLogs];
-      newLogs[index] = {
-        ...newLogs[index],
-        votes: (newLogs[index].votes || 0) + 1,
-      };
-      return newLogs;
-    });
-  };
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start bg-timer-background p-2 sm:p-4 pt-8 sm:pt-20">
-      {floatingArrows.map((arrow) => (
-        <div
-          key={arrow.id}
-          className="fixed pointer-events-none"
-          style={{
-            left: `${arrow.x}px`,
-            top: `${arrow.y}px`,
-            animation: 'float-up 1s ease-out forwards',
-          }}
-        >
-          <ArrowUp className="w-4 h-4 text-blue-400" />
-        </div>
-      ))}
       <div className="bg-white/5 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-12 shadow-2xl mb-6 sm:mb-12 w-full max-w-4xl">
         <h1 className="text-timer-text text-xl sm:text-2xl md:text-3xl font-semibold mb-4 sm:mb-8 text-center">
           Next Deployment
         </h1>
         <div className="flex items-center justify-center">
-          <TimeUnit value={timeLeft.days} />
-          <Separator />
           <TimeUnit value={timeLeft.hours} />
           <Separator />
           <TimeUnit value={timeLeft.minutes} />
@@ -186,7 +118,6 @@ export const CountdownTimer: React.FC = () => {
                 <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold">Product</th>
                 <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold hidden sm:table-cell">Description</th>
                 <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold">Link</th>
-                <th className="text-left py-2 sm:py-3 px-3 sm:px-4 font-semibold">Votes</th>
               </tr>
             </thead>
             <tbody>
@@ -208,39 +139,12 @@ export const CountdownTimer: React.FC = () => {
                       View
                     </a>
                   </td>
-                  <td className="py-2 sm:py-3 px-3 sm:px-4">
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={(e) => handleUpvote(index, e)}
-                        className="flex items-center justify-center bg-blue-500/10 hover:bg-blue-500/20 active:bg-blue-500/30 rounded-full p-2 transition-all duration-200 transform hover:scale-110 group"
-                        title="Upvote this product"
-                      >
-                        <ArrowUp className="w-5 h-5 text-blue-400 group-hover:text-blue-300" />
-                      </button>
-                      <span className="min-w-[1.5rem] text-center">{log.votes}</span>
-                    </div>
-                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
-
-      <style>
-        {`
-          @keyframes float-up {
-            0% {
-              transform: translateY(0) scale(1);
-              opacity: 1;
-            }
-            100% {
-              transform: translateY(-50px) scale(0.5);
-              opacity: 0;
-            }
-          }
-        `}
-      </style>
     </div>
   );
 };
