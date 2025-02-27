@@ -30,6 +30,13 @@ const deploymentLogs: DeploymentLog[] = [
     link: "https://github.com/yourboybean/deployment-countdown",
     votes: 0,
   },
+  {
+    date: "24 Feb",
+    product: "UFO",
+    description: "A crowdsourced leaderboard of the best operators in Utah",
+    link: "https://www.utahbest.tech",
+    votes: 0,
+  }
 ];
 
 const getNextThursday = (): Date => {
